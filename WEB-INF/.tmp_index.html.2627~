@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+	<textarea id="wikiText"></textarea>
+	<button id="confirm">ë³?™˜</button>
+	<div id="replace">
+	
+	</div>
+</body>
+<script type="text/javascript" src="wiki.js"></script>
+</html>
