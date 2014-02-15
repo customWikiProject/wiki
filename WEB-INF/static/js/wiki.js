@@ -10,52 +10,64 @@ Array.prototype.unique = function() {
 	return this;
 };
 
+/**
+ * 위키 네임스페이스
+ * Wiki namespace
+ */
 var Wiki = function() {
 };
+
 /**
  * 위키 마크업으로 작성된 문서를 파싱하는 객체
+ * Parse document written by wiki markup.
  */
-Wiki.Parser = new (function() {
+Wiki.Parser = (function() {
 	var domain = location.pathname;
 	var regexSets = [ {
-		// h1 parser ======text======
-		type : "h1",
-		regex : /\={6}(.*?)\={6}/g,
-		replaceStatement : "<h1>$1</h1>"
-	}, {
-		// h2 parser =====text=====
-		type : "h2",
-		regex : /\={5}(.*?)\={5}/g,
-		replaceStatement : "<h2>$1</h2>"
-	}, {
-		// h3 parser ====text====
-		type : "h3",
-		regex : /\={4}(.*?)\={4}/g,
-		replaceStatement : "<h3>$1</h3>"
-	}, {
-		// h4 parser ===text===
-		type : "h4",
-		regex : /\={3}(.*?)\={3}/g,
-		replaceStatement : "<h4>$1</h4>"
-	}, {
-		// h5 parser ==text==
-		type : "h5",
-		regex : /\={2}(.*?)\={2}/g,
-		replaceStatement : "<h5>$1</h5>"
-	}, {
-		// strong parser **text**
-		type : "bold",
-		regex : /\*{2}(.*?)\*{2}/g,
-		replaceStatement : "<strong>$1</strong>"
+		//
+		type : "headline proof",
+		regex : /\[\[(\={1,6})(.*?)\1\]\]/g,
+		replaceStatement : "$1 [[$2]] $1"
 	}, {
 		// link parser [[text]]
 		type : "link",
 		regex : /\[\[(.*?)\]\]/g,
 		replaceStatement : "<a href='" + domain + "?id=$1'>$1</a>"
+	},{
+		// h1 parser ======text======
+		type : "h1",
+		regex : /\={6}(.*?)\={6}/g,
+		replaceStatement : "<h1>$1</h1><hr>"
+	}, {
+		// h2 parser =====text=====
+		type : "h2",
+		regex : /\={5}(.*?)\={5}/g,
+		replaceStatement : "<h2>$1</h2><hr>"
+	}, {
+		// h3 parser ====text====
+		type : "h3",
+		regex : /\={4}(.*?)\={4}/g,
+		replaceStatement : "<h3>$1</h3><hr>"
+	}, {
+		// h4 parser ===text===
+		type : "h4",
+		regex : /\={3}(.*?)\={3}/g,
+		replaceStatement : "<h4>$1</h4><hr>"
+	}, {
+		// h5 parser ==text==
+		type : "h5",
+		regex : /\={2}(.*?)\={2}/g,
+		replaceStatement : "<h5>$1</h5><hr>"
+	}, {
+		// strong parser **text**
+		type : "bold",
+		regex : /\*{2}(.*?)\*{2}/g,
+		replaceStatement : "<strong>$1</strong>"
 	} ];
-
+	
 	/**
 	 * 헤드라인별로 div로 묶는다.
+	 * grouping by headline tag.
 	 * 
 	 * @author YuiNacor
 	 * @param {string} 파싱을 수행할 본문 문서
@@ -75,27 +87,33 @@ Wiki.Parser = new (function() {
 		}
 		return string;
 	};
+	
+	return {
+		/**
+		 * 문서 전체의 파싱을 수행
+		 * 
+		 * @author YuiNaCor
+		 * @param {string} 파싱을 수행할 본문 문서
+		 * @returns {element} 파싱 후 하나의 div로 랩핑된 문서
+		 * @version 1.0
+		 */
+		replaceAll : function(string) {
 
-	/**
-	 * 문서 전체의 파싱을 수행
-	 * 
-	 * @author YuiNaCor
-	 * @param {string} 파싱을 수행할 본문 문서
-	 * @returns {element} 파싱 후 하나의 div로 랩핑된 문서
-	 * @version 1.0
-	 */
-	this.replaceAll = function(string) {
+			string = makeDomHierarchy(string);
 
-		string = makeDomHierarchy(string);
-
-		for ( var i = 0; i < regexSets.length; i++) {
-			string = string.replace(regexSets[i].regex,
-					regexSets[i].replaceStatement);
+			for ( var i = 0; i < regexSets.length; i++) {
+				string = string.replace(regexSets[i].regex,
+						regexSets[i].replaceStatement);
+			}
+			return "<div>" + string + "</div>";
 		}
-		return "<div>" + string + "</div>";
 	};
+})();
 
-});
+
+
+
+
 
 document.getElementById("confirm").addEventListener("click", function(e) {
 	var dom = document.getElementById("wikiText");
