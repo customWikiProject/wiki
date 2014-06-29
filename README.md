@@ -22,6 +22,7 @@ Korean readme
   * [[모바일 지원]]
   * [[검색]]기능
 
+  * 디자인은 대훈이가 한다고 합니다.
 
 English readme
 
